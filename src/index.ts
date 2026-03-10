@@ -1,3 +1,5 @@
+import { connect } from 'cloudflare:sockets';
+
 /**
  * Welcome to Cloudflare Workers! This is your first worker.
  *
@@ -13,6 +15,43 @@
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
-		return new Response('Hello World!');
+		const url = new URL(request.url);
+		if(url.pathname === '/socket' && request.method === 'POST') {
+			return fcless(url,request, env, ctx);
+		}
+		return new Response('404 Not Found', { status: 404 });
 	},
 } satisfies ExportedHandler<Env>;
+
+
+function fcless(url: URL, request: Request, env: Env, ctx: ExecutionContext): Response {
+	const hostName = url.searchParams.get('hostname');
+	const port = url.searchParams.get('port');
+	if(!hostName || !port) {
+		return new Response('hostname and port query parameters are required', { status: 400 });
+	}
+	// 校验端口号是否合法
+	const portNumber = parseInt(port);
+	if(isNaN(portNumber) || portNumber < 1 || portNumber > 65535) {
+		return new Response('port must be a number between 1 and 65535', { status: 400 });
+	}
+	// 校验请求体是否存在
+	if(!request.body) {
+		return new Response('Request body is required', { status: 400 });
+	}
+	console.log(`Connecting to ${hostName}:${portNumber}`);
+	// 连接到目标服务器
+	const tcpSocket = connect({
+		hostname: hostName,
+		port: portNumber,
+	});
+	const upstream = request.body?.pipeTo(tcpSocket.writable);
+	ctx.waitUntil(
+        Promise.resolve(upstream).finally(() => {
+			tcpSocket.close().catch(() => {
+				// 连接关闭时可能会抛出错误，忽略就行
+			});   
+        })
+    );
+	return new Response(tcpSocket.readable,{status: 200});
+}
