@@ -6,6 +6,7 @@ declare namespace Cloudflare {
 		mainModule: typeof import("./src/index");
 	}
 	interface Env {
+        TUNNELS: DurableObjectNamespace<import("./src/index").TunnelSession>;
 	}
 }
 interface Env extends Cloudflare.Env {}

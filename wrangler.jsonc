@@ -12,6 +12,22 @@
 	},
 	"compatibility_flags": [
 		"nodejs_compat"
+	],
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "TUNNELS",
+				"class_name": "TunnelSession"
+			}
+		]
+	},
+	"migrations": [
+		{
+			"tag": "v1",
+			"new_sqlite_classes": [
+				"TunnelSession"
+			]
+		}
 	]
 	/**
 	 * Smart Placement
