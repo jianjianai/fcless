@@ -40,15 +40,25 @@ async function fcless(url: URL, request: Request, env: Env, ctx: ExecutionContex
 		return new Response('Request body is required', { status: 400 });
 	}
 	console.log(`Connecting to ${hostName}:${portNumber}`);
-	// 连接到目标服务器
-	const tcpSocket = connect({
-		hostname: hostName,
-		port: portNumber,
-	});
 	try {
+		// 连接到目标服务器
+		const tcpSocket = connect({
+			hostname: hostName,
+			port: portNumber,
+		});
 		await tcpSocket.opened;
-		ctx.waitUntil(request.body.pipeTo(tcpSocket.writable));
-		return new Response(tcpSocket.readable, { status: 200 });
+		request.body.pipeTo(tcpSocket.writable).catch((error) => {
+			console.error('Error piping request body to target server:', error);
+			tcpSocket.close();
+		});
+		return new Response(tcpSocket.readable, {
+			status: 200,
+			headers: {
+				"Content-Type": "application/octet-stream",
+				"Cache-Control": "no-store",
+				"X-Content-Type-Options": "nosniff",
+			},
+		});
 	} catch (error) {
 		console.error('Error connecting to target server:', error);
 		return new Response('Failed to connect to target server', { status: 502 });
