@@ -1,32 +1,72 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Hello, World!</title>
-	</head>
-	<body>
-		<h1 id="heading"></h1>
-		<p>This page comes from a static asset stored at `public/index.html` as configured in `wrangler.jsonc`.</p>
-		<button id="button" type="button">Fetch a random UUID</button>
-		<output id="random" for="button"></output>
-		<script>
-			fetch('/message')
-				.then((resp) => resp.text())
-				.then((text) => {
-					const h1 = document.getElementById('heading');
-					h1.textContent = text;
-				});
+<!DOCTYPE html>
+<html lang="zh-cn">
 
-			const button = document.getElementById("button");
-			button.addEventListener("click", () => {
-				fetch('/random')
-					.then((resp) => resp.text())
-					.then((text) => {
-						const random = document.getElementById('random');
-						random.textContent = text;
-					});
-			});
-		</script>
-	</body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="title">fcless</title>
+    <style>
+        /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        h1 {
+            font-size: 4rem;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 0.5em;
+        }
+        p {
+            font-size: 1.25rem;
+            color: #f0f0f0;
+            max-width: 600px;
+            line-height: 1.6;
+            margin: 0 auto 1.5em;
+        }
+        a.btn {
+            display: inline-block;
+            padding: 0.75em 1.5em;
+            background: #fff;
+            color: #4e54c8;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s, transform 0.2s;
+        }
+        a.btn:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+        footer {
+            position: absolute;
+            bottom: 1em;
+            width: 100%;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h1>fcless</h1>
+        <p>Welcome to fcless – the future of serverless applications powered by Cloudflare Workers.
+        Experience seamless deployment, blazing fast edge performance, and effortless scalability.</p>
+        <a href="https://github.com/" class="btn" target="_blank" rel="noopener">Get Started →</a>
+    </div>
+    <footer>© 2026 fcless. All rights reserved.</footer>
+</body>
+
 </html>
