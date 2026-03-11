@@ -3,10 +3,12 @@
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {
-		"deploy": "wrangler deploy",
-		"dev": "wrangler dev",
-		"start": "wrangler dev",
-		"cf-typegen": "wrangler types"
+		"deploy": "pnpm run deploy:backend && pnpm run deploy:pages",
+		"deploy:backend": "wrangler deploy -c wrangler.worker.jsonc",
+		"deploy:pages": "wrangler pages deploy",
+		"dev": "wrangler pages dev -c wrangler.jsonc -c wrangler.worker.jsonc",
+		"start": "wrangler pages dev -c wrangler.jsonc -c wrangler.worker.jsonc",
+		"cf-typegen": "wrangler types -c wrangler.worker.jsonc"
 	},
 	"devDependencies": {
 		"@types/node": "^25.4.0",
